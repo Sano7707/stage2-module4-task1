@@ -9,8 +9,7 @@ import java.util.Properties;
 
 public class H2ConnectionFactory implements ConnectionFactory {
     @Override
-    public Connection createConnection()  {
-        Connection con = null;
+    public Connection createConnection() throws SQLException {
         Properties prop = new Properties();
         String driver = prop.getProperty("jdbc_driver");
         String dbUrl = prop.getProperty("db_url");
@@ -21,13 +20,10 @@ public class H2ConnectionFactory implements ConnectionFactory {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        try {
-            con = DriverManager.getConnection(dbUrl,userName,password);
-        } catch (SQLException e) {
-             e.printStackTrace();
-        }
-        return con;
+
+        return DriverManager.getConnection(dbUrl,userName,password);
     }
+
     // Write your code here!
 }
 
