@@ -14,6 +14,7 @@ public class ThreadSafeSingleton{
         if (instance == null) {
             instance = new ThreadSafeSingleton();
         }
+
         return instance;
     }
 }
