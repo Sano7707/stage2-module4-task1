@@ -2,36 +2,50 @@ package com.mjc.stage2.impl;
 
 import com.mjc.stage2.ConnectionFactory;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 public class H2ConnectionFactory implements ConnectionFactory {
+    private Connection con;
     @Override
     public Connection createConnection() throws SQLException {
-        try (InputStream input = new FileInputStream("task3-factory-pattern/src/main/resources/h2database.properties")) {
 
+        try {
             Properties prop = new Properties();
-            prop.load(input);
+            prop.load(
+                    H2ConnectionFactory.class.getClassLoader().getResourceAsStream("h2database.properties")
+            );
+
             String driver = prop.getProperty("jdbc_driver");
             String url = prop.getProperty("db_url");
             String userName = prop.getProperty("user");
             String password = prop.getProperty("password");
+            System.out.println(url);
+            System.out.println(userName);
+
             try {
                 Class.forName(driver);
-                return DriverManager.getConnection(url,userName,password);
+                con = DriverManager.getConnection(url, userName, password);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+            return con;
     }
-    // Write your code here!
-}
+
+        // Write your code here!
+
+        public static void main (String[]args) throws SQLException {
+            H2ConnectionFactory h2 = new H2ConnectionFactory();
+            h2.createConnection();
+        }
+    }
+
 
